@@ -84,8 +84,8 @@ def navclear(s):
         return s[:-4]
     return s
 
-def unique_visitors_add(ip):
-    if ip not in unique_visitors():
+def unique_visitors_add(ip, pre):
+    if ip not in unique_visitors(pre):
         if os.path.exists(pre+".unique_visitors"):
             with open(pre+".unique_visitors", 'a') as f:
                 f.write(ip+"\n")
@@ -199,7 +199,7 @@ def page(path):
     #return navii(PREFIX+path, 0, '', True)+s+str(request.environ)
     fstr = info[2][:-1]
     if ENABLE_UNIQUE_VISITORS:
-        unique_visitors_add(PREFIX)
+        unique_visitors_add(request.environ['REMOTE_ADDR'], PREFIX)
         fstr =  info[2][:-1]+"; "+str(unique_visitor_count(PREFIX))+" unique visitors."
     return tmpl.format(title=ptitle, site_title=info[0], subtitle=info[1],
                        nav=navii(PREFIX+path, 0, '', True),
