@@ -200,7 +200,7 @@ def page(path):
     fstr = info[2][:-1]
     if ENABLE_UNIQUE_VISITORS:
         unique_visitors_add(request.environ['REMOTE_ADDR'], PREFIX)
-        fstr =  info[2][:-1]+"; "+str(unique_visitor_count(PREFIX))+" unique visitors."
+        fstr =  info[2][:-1]+"; "+str(unique_visitors_count(PREFIX))+" unique visitors."
     return tmpl.format(title=ptitle, site_title=info[0], subtitle=info[1],
                        nav=navii(PREFIX+path, 0, '', True),
                        content=s, footer=fstr, topbar=info[3])
