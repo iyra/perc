@@ -1,3 +1,10 @@
+"""
+perc - a small "anti-framework" inspired by werc
+Copyright (C) iyra
+License: CC0 1.0 Universal Public Domain Dedication
+https://creativecommons.org/publicdomain/zero/1.0/
+"""
+
 from flask import Flask, abort, send_from_directory, request
 from os import listdir
 import markdown

@@ -1,0 +1,77 @@
+DESCRIPTION
+perc - a web "anti-framework" CMS inspired by werc
+
+This program will display a directory tree as a HTML navigation,
+render .md files as Markdown (and .html files as HTML). That's it. It
+works fine for things like blogs and other sites with static content,
+though beacuse it uses Flask you can easily extend it with things like
+login.
+
+REQUIREMENTS
+perc uses hard-coded / as a path separator, so it probably won't work
+on Windows. perc is py3-only.
+The following dependencies are required and can be installed through
+pip:
+- flask
+- markdown
+
+INSTALL
+Clone the repository:
+    git clone https://github.com/iyra/perc.git
+    cd perc
+Make a directory from which to host perc, such as a folder in your
+home:
+    mkdir -p ~/site/example.com
+    mkdir ~/site/example.com/pub
+Copy perc.py and perc_blog.py and the public files into ~/site:
+    cp perc* ~/site
+    cp site.css ~/site/example.com/pub
+Install uwsgi:
+    pip install uwsgi
+Run the site with uwsgi:
+    cd ~/site
+    echo '#My homepage\nHello world.' > example.com/index.md
+    uwsgi -s /tmp/perc.sock --manage-script-name --mount /=perc:app
+Create a server block for example.com which proxies uwsgi:
+    server {
+        listen example.com:80;
+        location ~* ^/(pub|favicon.ico|robots.txt)$ {
+            root           /home/USERNAME/site/$host;
+        }
+        location / { try_files $uri @app; }
+        location @app {
+            include uwsgi_params;
+            uwsgi_param HOST $host;
+            uwsgi_pass unix:/tmp/perc.sock;
+        }
+    }
+And replace "USERNAME" with your username, of course. Then reload
+nginx:
+    systemctl restart nginx
+
+RUNNING A BLOG
+You can run a blog with perc; there is a script which will generate a
+directory tree to store posts. For example, if you make a post on 3rd
+January 2017, it will create ~/site/example.com/blog/2017/1/3/N.md
+where N is the Nth post of the 3rd January 2017.
+    cd ~/site/example.com
+    python ../perc_blog.py new Some Post Title
+    # You can also do this without the post title
+    # Now edit your post and save it:
+    nano blog/2017/1/3/0.md
+
+Each time you run with the 'new' command, it will create the necessary
+directories and number the post appropriately. If you modify a post,
+you can update the blog index page to reflect the change:
+    cd ~/site/example.com
+    python ../perc_blog.py update
+
+WARNING
+This software is experimental and should not be used in production or
+for anything serious.
+
+LICENSE
+perc - a small "anti-framework" inspired by werc
+Copyright (C) iyra
+License: CC0 1.0 Universal Public Domain Dedication
+https://creativecommons.org/publicdomain/zero/1.0/

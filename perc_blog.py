@@ -83,7 +83,6 @@ def update():
         f.write(s)
     print(str(e)+ " posts read, blog/index.md made.")
 
-def delete_post(
 
 if sys.argv[1] == "new":
     if len(sys.argv) > 2:
