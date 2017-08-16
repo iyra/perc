@@ -84,6 +84,26 @@ def navclear(s):
         return s[:-4]
     return s
 
+def unique_visitor_add(ip):
+    if ip not in unique_visitors():
+        if os.path.exists(PREFIX+".unique_visitors"):
+            with open(PREFIX+".unique_visitors", 'a') as f:
+                f.write(ip+"\n")
+
+def unique_visitors():
+    e = []
+    if os.path.exists(PREFIX+".unique_visitors"):
+        with open(PREFIX+".unique_visitors", 'r') as f:
+            for l in f:
+                if l[len(l)-1] == "\n":
+                    e.append(l[:-1])
+                else:
+                    e.append(l)
+    return e
+
+def unique_visitors_count():
+    return len(unique_visitors())
+
 def navii(loc, n, parent, donext):
     parts = loc.split('/')
     cur = '/'.join(parts[:n+1])
@@ -174,9 +194,10 @@ def page(path):
     else:
         abort(404)
     #return navii(PREFIX+path, 0, '', True)+s+str(request.environ)
+    unique_visitor_add()
     return tmpl.format(title=ptitle, site_title=info[0], subtitle=info[1],
                        nav=navii(PREFIX+path, 0, '', True),
-                       content=s, footer=info[2], topbar=info[3])
+                       content=s, footer=info[2]+"; "+str(unique_visitor_count())+" unique visitors.", topbar=info[3])
 
 #if __name__ == '__main__':
 #    app.run()

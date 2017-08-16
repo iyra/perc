@@ -71,6 +71,12 @@ you can update the blog index page to reflect the change:
     cd ~/site/example.com
     python ../perc_blog.py update
 
+UNIQUE VISITORS EXTENSION
+You can display the number of unique visitors your site has in the 
+footer, it works by recording visitor IPs and checking if each new 
+visitor IP is on the list of IPs already recorded. If it isn't, the
+counter is incremented. Enable it by creating ~/site/example.com/.unique_visitors
+
 WARNING
 This software is experimental and should not be used in production or
 for anything serious.
