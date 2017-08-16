@@ -84,16 +84,16 @@ def navclear(s):
         return s[:-4]
     return s
 
-def unique_visitor_add(ip):
+def unique_visitors_add(ip):
     if ip not in unique_visitors():
-        if os.path.exists(PREFIX+".unique_visitors"):
-            with open(PREFIX+".unique_visitors", 'a') as f:
+        if os.path.exists(pre+".unique_visitors"):
+            with open(pre+".unique_visitors", 'a') as f:
                 f.write(ip+"\n")
 
-def unique_visitors():
+def unique_visitors(pre):
     e = []
-    if os.path.exists(PREFIX+".unique_visitors"):
-        with open(PREFIX+".unique_visitors", 'r') as f:
+    if os.path.exists(pre+".unique_visitors"):
+        with open(pre+".unique_visitors", 'r') as f:
             for l in f:
                 if l[len(l)-1] == "\n":
                     e.append(l[:-1])
@@ -101,8 +101,8 @@ def unique_visitors():
                     e.append(l)
     return e
 
-def unique_visitors_count():
-    return len(unique_visitors())
+def unique_visitors_count(pre):
+    return len(unique_visitors(pre))
 
 def navii(loc, n, parent, donext):
     parts = loc.split('/')
@@ -145,6 +145,9 @@ def page(path):
     #PREFIX="localhost/"
     if not os.path.exists(PREFIX+".info"):
         abort(500)
+    ENABLE_UNIQUE_VISITORS=False
+    if os.path.exists(pre+".unique_visitors"):
+        ENABLE_UNIQUE_VISITORS=True
     info = []
     with open(PREFIX+".info", 'r') as infile:
         for line in infile:
@@ -194,10 +197,13 @@ def page(path):
     else:
         abort(404)
     #return navii(PREFIX+path, 0, '', True)+s+str(request.environ)
-    unique_visitor_add()
+    fstr = info[2][:-1]
+    if ENABLE_UNIQUE_VISITORS:
+        unique_visitors_add(PREFIX)
+        fstr =  info[2][:-1]+"; "+str(unique_visitor_count(PREFIX))+" unique visitors."
     return tmpl.format(title=ptitle, site_title=info[0], subtitle=info[1],
                        nav=navii(PREFIX+path, 0, '', True),
-                       content=s, footer=info[2]+"; "+str(unique_visitor_count())+" unique visitors.", topbar=info[3])
+                       content=s, footer=fstr, topbar=info[3])
 
 #if __name__ == '__main__':
 #    app.run()
