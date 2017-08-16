@@ -30,6 +30,7 @@ Install uwsgi:
     pip install uwsgi
 Run the site with uwsgi:
     cd ~/site
+    echo "Site title\nSite tagline\nFooter text\nTop nav bar content" > example.com/.info
     echo '#My homepage\nHello world.' > example.com/index.md
     uwsgi -s /tmp/perc.sock --manage-script-name --mount /=perc:app
 Create a server block for example.com which proxies uwsgi:
@@ -48,6 +49,10 @@ Create a server block for example.com which proxies uwsgi:
 And replace "USERNAME" with your username, of course. Then reload
 nginx:
     systemctl restart nginx
+
+For this to work, the user running uwsgi needs to be the same as the
+user running nginx. (You can change this with the `user' directive) in
+your nginx config file.
 
 RUNNING A BLOG
 You can run a blog with perc; there is a script which will generate a
