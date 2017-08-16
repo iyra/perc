@@ -146,7 +146,7 @@ def page(path):
     if not os.path.exists(PREFIX+".info"):
         abort(500)
     ENABLE_UNIQUE_VISITORS=False
-    if os.path.exists(pre+".unique_visitors"):
+    if os.path.exists(PREFIX+".unique_visitors"):
         ENABLE_UNIQUE_VISITORS=True
     info = []
     with open(PREFIX+".info", 'r') as infile:
